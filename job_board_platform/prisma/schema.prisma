@@ -1,0 +1,25 @@
+enum RoleEnum{
+    EMPLOYER
+    CANDIDATE
+    ADMIN
+}
+
+model User {
+    ID              String
+    Name            String
+    Role            RoleEnum
+    Email           String
+    PassWordHash    String
+    CreatedAt       DateTime
+}
+
+model EmployerProfile {
+    UserID               String
+    CompanyName         String
+    CompanyDescription  String
+}
+
+model CandidateProfile {
+    UserID      String
+    Headline    String
+}
