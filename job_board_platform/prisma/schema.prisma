@@ -3,7 +3,23 @@ enum RoleEnum{
     CANDIDATE
     ADMIN
 }
+enum SiteEnum{
+    ONSITE
+    REMOTE
+    HYBRID
+}
 
+enum JobStatusEnum {
+    OPEN
+    CLOSED
+}
+enum AppStatusEnum {
+    APPLIED
+    REVIEWED
+    INTERVIEW
+    REJECTED
+    HIRED
+}
 model User {
     ID              String
     Name            String
@@ -14,7 +30,7 @@ model User {
 }
 
 model EmployerProfile {
-    UserID               String
+    UserID              String
     CompanyName         String
     CompanyDescription  String
 }
@@ -22,4 +38,36 @@ model EmployerProfile {
 model CandidateProfile {
     UserID      String
     Headline    String
+}
+
+model JobListing {
+    EmployerID  String
+    Title       String
+    Desritption String
+    Location    String
+    Type        SiteENum
+    SalaryRange String
+    Status      JobStatusEnum
+}
+
+model Resume {
+    CandidateID String
+    FileUrl     String
+    FileName    String
+    UploadedAt  DateTime
+}
+
+model Application {
+    JobID       String
+    CandidateID String
+    ResumeID    String
+    Status      AppStatusEnum
+    AppliedAt   DateTime
+}
+
+model Notification {
+    UserID      String
+    Message     String
+    Read        Boolean
+    CreatedAt   DateTime
 }
