@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { signupSchema } from "./auth.schema.ts";
-import { registerUser } from "./auth.service.ts";
-import { ConflictError} from "./errors/AppErrors.js";
+import { signupSchema } from "./auth.schema";
+import { registerUser } from "./auth.service";
+import { ConflictError} from "./errors/AppError.js";
 export async function signupController( req: Request, res: Response){
     const result = await signupSchema.safeParse(req.body);
 
@@ -11,18 +11,18 @@ export async function signupController( req: Request, res: Response){
         });
     }
    try{
-    const user = await registerUser(resutl.data);
+    const user = await registerUser(result.data);
 
     return res.status(201).json(user);
    }
    catch(error){
-      if (error instanceOf ConflictError){
+      if (error instanceof ConflictError){
           return res.status(409).json({
               error: error.message,
           });
       }
        return res.status(500).json({
-           error: "Internal server error";
+           error: "Internal server error",
        });
    }
 }

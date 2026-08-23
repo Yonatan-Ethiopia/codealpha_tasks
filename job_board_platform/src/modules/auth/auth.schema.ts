@@ -13,7 +13,7 @@ export const signupSchema = z.discriminatedUnion("role", [
         role: z.literal("EMPLOYER"),
         name: z.string().min(2),
         email: z.string().email(),
-        passwordHash: z.string().min(8),
+        password: z.string().min(8),
         companyName: z.string().min(1),
         companyDescription: z.string().min(5),
     }),
