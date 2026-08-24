@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { signupSchema } from "./auth.schema";
 import { registerUser } from "./auth.service";
-import { ConflictError} from "./errors/AppError.js";
+import { ConflictError} from "../../errors/AppError.js";
 export async function signupController( req: Request, res: Response){
     const result = await signupSchema.safeParse(req.body);
 
@@ -21,6 +21,7 @@ export async function signupController( req: Request, res: Response){
               error: error.message,
           });
       }
+      console.error(error);
        return res.status(500).json({
            error: "Internal server error",
        });

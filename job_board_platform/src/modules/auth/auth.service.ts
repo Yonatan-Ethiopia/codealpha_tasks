@@ -1,5 +1,5 @@
-import prisma from "./prisma/client.js";
-import { ConflictError } from "./errors/AppError.js";
+import { prisma } from "../../../prisma/client";
+import { ConflictError } from "../../errors/AppError.js";
 import bcrypt from "bcrypt";
 import { SignupData } from "./auth.schema.js";
 
