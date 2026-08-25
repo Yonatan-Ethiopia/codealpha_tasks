@@ -1,7 +1,11 @@
 import { prisma } from "../../../prisma/client";
-import { ConflictError } from "../../errors/AppError.js";
+import { ConflictError, NotFoundError, MisMatchError } from "../../errors/AppError.js";
 import bcrypt from "bcrypt";
-import { SignupData } from "./auth.schema.js";
+import { SignupData, LoginData } from "./auth.schema.js";
+import * as dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+
+dotenv.config();
 
 export async function registerUser(input: SignupData) {
   const emailExists = await prisma.user.findUnique({ where: { email: input.email } });
@@ -40,4 +44,26 @@ export async function registerUser(input: SignupData) {
       select: { id: true, name: true, email: true, role: true, createdAt: true },
     });
   });
+}
+
+export async function loginUser( input: LoginData ) {
+  const user = await prisma.user.findUnique({ where: { email: input.email } });
+  if (!user){
+    throw new MisMatchError("Incorret email or password");
+  }
+
+  const isMatch = await bcrypt.compare( input.password, user.paswordHash);
+  if (!isMatch){
+    throw new MisMatchError("Incorrect email or password");
+  }
+
+  const SECRET_KEY = process.env.SECRET_KEY;
+  if (!SECRET_KEY) {
+    throw new Error("secret key not set");
+  }
+  const token = jwt.sign({ _id: user.id.to_string(), email: user.email }, SECRET_KEY, { expiresIn: '2 days',});
+
+  return { user: { id: user.id, email: user.email}, token: token};
+
+
 }

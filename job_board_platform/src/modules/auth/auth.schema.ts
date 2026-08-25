@@ -20,4 +20,10 @@ export const signupSchema = z.discriminatedUnion("role", [
 
 ]);
 
+export const loginSchema = z.object({
+  email: z.string().email(),
+  password; z.string().min(8),
+});
+
 export type SignupData = z.infer<typeof signupSchema>;
+export type LoginData = z.infer<typeof loginSchema>;

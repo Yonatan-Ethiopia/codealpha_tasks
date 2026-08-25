@@ -23,3 +23,10 @@ export class ConflictError extends AppError {
         this.name="ConflictError";
     }
 }
+
+export class MisMatchError extends AppError {
+    constructor ( message = "Resource doesn't match"){
+        super(401, message)
+        this.name = "MisMatchError";
+    }
+}
