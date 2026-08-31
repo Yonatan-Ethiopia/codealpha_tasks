@@ -61,7 +61,7 @@ export async function loginUser( input: LoginData ) {
   if (!SECRET_KEY) {
     throw new Error("secret key not set");
   }
-  const token = jwt.sign({ _id: user.id.to_string(), email: user.email }, SECRET_KEY, { expiresIn: '2 days',});
+  const token = jwt.sign({ _id: user.id.to_string(), email: user.email, role: user.role }, SECRET_KEY, { expiresIn: '2 days',});
 
   return { user: { id: user.id, email: user.email}, token: token};
 

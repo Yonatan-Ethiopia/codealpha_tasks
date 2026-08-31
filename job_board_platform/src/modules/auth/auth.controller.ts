@@ -12,7 +12,6 @@ export async function signupController( req: Request, res: Response){
     }
    try{
     const user = await registerUser(result.data);
-
     return res.status(201).json(user);
    }
    catch(error){
