@@ -1,5 +1,5 @@
 import { Request, Response} from "express";
-import { CreateJobSchema } from "./jobs.schema";
+import { CreateJobSchema, CreateJobData, GetJobsSchema, GetJobsData } from "./jobs.schema";
 import { CreateJob } from "./jobs.service";
 
 export async function CreateJobController( req: AuthRequest, res: Response){
@@ -25,5 +25,22 @@ export async function CreateJobController( req: AuthRequest, res: Response){
                 message: "Internal server error",
             });
         }
+    }
+}
+export async function GetJobsController( req: AuthRequest, res: Response){
+    const data = await GetJobsSchema.safeParse(req.body);
+    if (!data.success){
+        return res.status(400).json({
+            error: result.error.flatten(),
+        });
+    }
+    try{
+        const jobs = await GetJobs( data );
+        return res.status(201).json(jobs);
+    } catch(console.error){
+        console.error(error);
+        return res.status(500).json({
+            message:"Internal server error",
+        });
     }
 }
