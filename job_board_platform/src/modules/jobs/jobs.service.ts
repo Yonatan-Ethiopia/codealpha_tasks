@@ -39,3 +39,62 @@ export async function GetJobs( where: GetJobsData, orderBy: string,skip: number)
         return { success: true, data: jobs }
     })
 }
+
+export async function ApplyForJobs ( userId: string, jobId: string, resumeId: string){
+    try{
+        const application = await this.prisma.application.create({
+            data:{
+                jobId,
+                candidateId: userId,
+                resumeId,
+            }, select:{
+                status: true,
+                appliedAt: true,
+                resumeId: true,
+            }
+        });
+        return application;
+    } catch{
+        throw new Error("Internal server error");
+    }
+}
+
+export async function trackApplication( userId: string, jobId: string){
+    try{
+        const application = await this.prisma.application.findUnique({
+            where: { candidateId: userId, jobId,},
+            select: { status: true, resumeId: true, appliedAt: true },
+        });
+        return application;
+    }catch{
+        throw new Error("Internal server error");
+    }
+}
+
+export async function getApplications( userId: string, skip=0){
+    try{
+        const applications = await this.prisma.application.findMany({
+            take: 10,
+            skip,
+            where: { candidateId: userId },
+            orderBy: { appliedAt: "desc"},
+        });
+        return applicationsl
+    }catch{
+        throw new Error("Internal server error");
+    }
+}
+
+export async function getApplicants( jobId: string, skip = 0){
+    try{
+        const applications = await this.prisma.application.findMany({
+            take: 10,
+            skip,
+            where: { jobId},
+            orderBy: { appliedAt: "desc"},
+        });
+        return applications;
+    }catch{
+        throw new Error("Internal server error");
+    }
+}
