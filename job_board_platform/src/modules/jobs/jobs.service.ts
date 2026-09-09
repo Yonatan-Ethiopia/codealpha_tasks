@@ -98,3 +98,37 @@ export async function getApplicants( jobId: string, skip = 0){
         throw new Error("Internal server error");
     }
 }
+
+export async function acceptApplication( jobId: string, userId: string, applicationId: string){
+    try{
+        const application = await this.prisma.$queryRaw`
+            UPDATE "Application" AS a 
+            SET "status" = 'ACCEPTED'
+            FROM "JobListing" AS j
+            WHERE a."jobId" = j."id"
+                AND j."employerId" = ${userId}
+                AND a."jobId" = ${jobId};
+            `;
+        if (!application){ throw new NotFoundError("No application was found");}
+        return application;
+    }catch{
+        throw new Error("Server error");
+    }
+}
+
+export async function rejectApplication( jobId: string, userId: string, applicationId: string){
+    try{
+        const application = await this.prisma.$queryRaw`
+            UPDATE "Application" AS a 
+            SET "status" = 'REJECTED'
+            FROM "JobListing" AS j
+            WHERE a."jobId" = j."id"
+                AND j."employerId" = ${userId}
+                AND a."jobId" = ${jobId};
+            `;
+        if (!application){ throw new NotFoundError("No application was found");}
+        return application;
+    }catch{
+        throw new Error("Server error");
+    }
+}
