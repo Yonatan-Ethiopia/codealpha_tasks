@@ -44,3 +44,60 @@ export async function GetJobsController( req: AuthRequest, res: Response){
         });
     }
 }
+ export async function ApplyForJonsController( req: AuthRequest, res: Response){
+     const data = await ApplyForJobsSchema.safeParse(req.body);
+    if(!data.success){ 
+        return res.status(400).json({
+            error: result.error.flatten(),
+        });
+    }
+     try{
+         const user = req.user;
+         const application = await ApplyForJobs(user.id, data.jobId, data.resumeId);
+         return res.status(200).json(application);
+     } catch(error){
+         console.log(error);
+         return res.status(500).json({
+             message:"Internal server error"
+         });
+     }
+ }
+
+ export async function TrackApplicationController( req: AuthRequest, res: Response){
+     try{
+         const user = req.user;
+         const application = await trackApplication(user.Id, jobId);
+         return res.status(200).json(application);
+     }catch(error){
+         console.log(error);
+         return res.status(500).json({
+             message: "Internal server error"
+         });
+     }
+ }
+
+ export async function GetApplications( req: AuthRequest, res: Response){
+     try{
+         const user = req.user;
+         const applications = await getApplications(user.id, skip);
+         return res.status(200).json(applications)
+     }catch(error){
+         console.log(error);
+         return res.status(500).json({
+             message:"Internal server error"
+         });
+     }
+ }
+
+ export async function GetApplicantsController( req: AuthRequest, res: Response){
+     try{
+         const user = req.user;
+         const applicants = await getApplicants( userId, jobId, skip );
+         return res.status(200).json(applicants);
+     }catch(error){
+         console.log(error);
+         return res.status(500).json({
+             message:"Internal server error"
+         });
+     }
+ }

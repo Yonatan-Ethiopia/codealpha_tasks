@@ -30,3 +30,9 @@ export const GetJobsSchema = z.object({
 
 })
 export type GetJobsData = z.infer<typeof GetJobsSchema>["where"];
+
+export const ApplyForJobsSchema = z.object({
+    jobId: z.string(),
+    resumeId: z.string()
+})
+export type ApplyForJobsData = z.infer<typeof ApplyForJobsSchema>;
