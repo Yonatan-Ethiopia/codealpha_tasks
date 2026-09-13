@@ -2,6 +2,21 @@ import { prisma } from "../../../prisma/client";
 import { ConflictError, NotFoundError, MisMatchError} from "../../errors/AppError";
 import { CreateJobData, GetJobsData } from "./jobs.schema";
 
+async function addNotification( userId: string, message: string){
+    try{
+        await prisma.notification.create({
+            data:{
+                userId,
+                message
+            }
+        });
+        return true
+    }catch(error){
+        console.log(error);
+        return false
+    }
+}
+
 export async function CreateJob( userId: string, data: CreateJobData){
     try:{
         return await prisma.$transcation( async (tx)=>{
@@ -53,6 +68,15 @@ export async function ApplyForJobs ( userId: string, jobId: string, resumeId: st
                 resumeId: true,
             }
         });
+        const employerId = await this.prisma.jobListing.findUnique({
+            where:{ id: jobId,}, select:{ employerId: true}
+        });
+        if( employerId){
+            const Notification = await addNotification(employerId, "There is a new application for your job post");
+            if( !Notification){
+                console.log("Notification couldnt be made.")
+            }
+        }
         return application;
     } catch{
         throw new Error("Internal server error");
@@ -110,6 +134,10 @@ export async function acceptApplication( jobId: string, userId: string, applicat
                 AND a."jobId" = ${jobId};
             `;
         if (!application){ throw new NotFoundError("No application was found");}
+        const Notification = await addNotification(userId, "Application accepted");
+        if( !Notification){
+            console.log("Notification couldnt be made.")
+        }
         return application;
     }catch{
         throw new Error("Server error");
@@ -127,6 +155,10 @@ export async function rejectApplication( jobId: string, userId: string, applicat
                 AND a."jobId" = ${jobId};
             `;
         if (!application){ throw new NotFoundError("No application was found");}
+        const Notification = await addNotification(userId, "Application rejected");
+        if( !Notification){
+            console.log("Notification couldnt be made.")
+        }
         return application;
     }catch{
         throw new Error("Server error");

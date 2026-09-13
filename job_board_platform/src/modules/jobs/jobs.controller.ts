@@ -66,7 +66,8 @@ export async function GetJobsController( req: AuthRequest, res: Response){
  export async function TrackApplicationController( req: AuthRequest, res: Response){
      try{
          const user = req.user;
-         const application = await trackApplication(user.Id, jobId);
+         const data = await TrackApplicationSchema
+         const application = await trackApplication(user.Id,jobId);
          return res.status(200).json(application);
      }catch(error){
          console.log(error);
@@ -92,11 +93,36 @@ export async function GetJobsController( req: AuthRequest, res: Response){
  export async function GetApplicantsController( req: AuthRequest, res: Response){
      try{
          const user = req.user;
-         const applicants = await getApplicants( userId, jobId, skip );
+         const applicants = await getApplicants( user.id, jobId, skip );
          return res.status(200).json(applicants);
      }catch(error){
          console.log(error);
          return res.status(500).json({
+             message:"Internal server error"
+         });
+     }
+ }
+
+ export async function AcceptApplicationController( req: AuthRequest, res: Response){
+     try{
+         const user = req.user;
+         const data = await AcceptApplicationSchema.safeParse(req.body);
+         const application = await acceptApplication( data.jobId, user.id, data.applicationId);
+         return res.status(200).json(application);
+     }catch(error){
+         console.log(error);
+         return res.status(500).json({
+             message: "Internal server error"
+         });
+     }
+ }
+
+ export async function rejectApplication( jobId: string, userId: string, applicationId: string){
+     try{
+         const user = req.user;
+         const data = await AcceptApplicationSchema.safeParse(req.body);
+         const application = await rejectApplication( data.jobId, user.id, data.applicationId);
+         return res.status(200).json({
              message:"Internal server error"
          });
      }

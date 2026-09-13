@@ -36,3 +36,9 @@ export const ApplyForJobsSchema = z.object({
     resumeId: z.string()
 })
 export type ApplyForJobsData = z.infer<typeof ApplyForJobsSchema>;
+
+export const AcceptApplicationSchema = z.object({
+    jobId: z.string(),
+    applicationId: z.string()
+});
+export type AcceptApplicationData = z.infer<typeof AcceptApplicationSchema>;
