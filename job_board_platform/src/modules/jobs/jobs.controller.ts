@@ -66,7 +66,7 @@ export async function GetJobsController( req: AuthRequest, res: Response){
  export async function TrackApplicationController( req: AuthRequest, res: Response){
      try{
          const user = req.user;
-         const data = await TrackApplicationSchema
+         const { jobId } = req.params;
          const application = await trackApplication(user.Id,jobId);
          return res.status(200).json(application);
      }catch(error){
@@ -80,6 +80,7 @@ export async function GetJobsController( req: AuthRequest, res: Response){
  export async function GetApplications( req: AuthRequest, res: Response){
      try{
          const user = req.user;
+         const skip = Number(req.query.skip) || 0;
          const applications = await getApplications(user.id, skip);
          return res.status(200).json(applications)
      }catch(error){
@@ -93,6 +94,8 @@ export async function GetJobsController( req: AuthRequest, res: Response){
  export async function GetApplicantsController( req: AuthRequest, res: Response){
      try{
          const user = req.user;
+         const { jobId } = req.params; 
+         const skip = Number(req.query.skip) || 0;
          const applicants = await getApplicants( user.id, jobId, skip );
          return res.status(200).json(applicants);
      }catch(error){
